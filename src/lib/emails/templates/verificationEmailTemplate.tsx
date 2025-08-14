@@ -3,11 +3,11 @@ import { Html, Head, Font, Preview, Heading, Row, Section, Text, Button, Contain
 
 interface VerificationEmailProps {
     name: string;
-    verificationLink: string;
+    link: string;
 }
 
 
-export default function VerificationEmailTemplate({ name, verificationLink }: VerificationEmailProps) {
+export default function VerificationEmailTemplate({ name, link }: VerificationEmailProps) {
     return (
         <Html lang="en" dir="ltr">
             <Head>
@@ -87,7 +87,7 @@ export default function VerificationEmailTemplate({ name, verificationLink }: Ve
                     <Row>
                         <Section style={{ textAlign: 'center', margin: '32px 0' }}>
                             <Button
-                                href={verificationLink}
+                                href={link}
                                 style={{
                                     backgroundColor: '#a855f7',
                                     background: 'linear-gradient(135deg, #f472b6 0%, #a855f7 100%)',
@@ -121,7 +121,7 @@ export default function VerificationEmailTemplate({ name, verificationLink }: Ve
                             borderRadius: '6px',
                             border: '1px solid #e5e7eb'
                         }}>
-                            {verificationLink}
+                            {link}
                         </Text>
                     </Row>
 
@@ -149,7 +149,7 @@ export default function VerificationEmailTemplate({ name, verificationLink }: Ve
                             lineHeight: '1.5',
                             margin: '0'
                         }}>
-                            This verification link will expire in 2 hours for security reasons.
+                            This verification link will expire in 1 hour for security reasons.
                         </Text>
                     </Row>
                 </Section>
