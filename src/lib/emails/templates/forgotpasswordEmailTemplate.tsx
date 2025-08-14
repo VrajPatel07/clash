@@ -3,11 +3,11 @@ import { Html, Head, Font, Preview, Heading, Row, Section, Text, Button, Contain
 
 interface ForgotPasswordEmailProps {
     name: string;
-    link: string;
+    resetPasswordLink?: string;
 }
 
 
-export default function ForgotPasswordEmailTemplate({ name, link }: ForgotPasswordEmailProps) {
+export default function ForgotPasswordEmailTemplate({ name, resetPasswordLink }: ForgotPasswordEmailProps) {
     return (
         <Html lang="en" dir="ltr">
             <Head>
@@ -106,7 +106,7 @@ export default function ForgotPasswordEmailTemplate({ name, link }: ForgotPasswo
                     <Row>
                         <Section style={{ textAlign: 'center', margin: '32px 0' }}>
                             <Button
-                                href={link}
+                                href={resetPasswordLink}
                                 style={{
                                     backgroundColor: '#a855f7',
                                     background: 'linear-gradient(135deg, #f472b6 0%, #a855f7 100%)',
@@ -140,7 +140,7 @@ export default function ForgotPasswordEmailTemplate({ name, link }: ForgotPasswo
                             borderRadius: '6px',
                             border: '1px solid #e5e7eb'
                         }}>
-                            {link}
+                            {resetPasswordLink}
                         </Text>
                     </Row>
 

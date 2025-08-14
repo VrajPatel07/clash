@@ -1,13 +1,13 @@
-import { Html, Head, Font, Preview, Heading, Row, Section, Text, Button, Container, Hr } from "@react-email/components";
+import { Html, Head, Font, Preview, Heading, Row, Section, Text, Container, Hr } from "@react-email/components";
 
 
 interface VerificationEmailProps {
     name: string;
-    link: string;
+    verifyCode?: string;
 }
 
 
-export default function VerificationEmailTemplate({ name, link }: VerificationEmailProps) {
+export default function VerificationEmailTemplate({ name, verifyCode }: VerificationEmailProps) {
     return (
         <Html lang="en" dir="ltr">
             <Head>
@@ -24,7 +24,7 @@ export default function VerificationEmailTemplate({ name, link }: VerificationEm
                 />
             </Head>
 
-            <Preview>Welcome to Clash! Verify your account to get started.</Preview>
+            <Preview>Welcome to Clash! Use code to verify your account.</Preview>
 
             <Container style={{
                 maxWidth: '600px',
@@ -80,48 +80,47 @@ export default function VerificationEmailTemplate({ name, link }: VerificationEm
                             lineHeight: '1.6',
                             margin: '0 0 24px 0'
                         }}>
-                            Thanks for joining Clash! We're excited to have you on board. To get started and access all features, please verify your email address by clicking the button below.
+                            Thanks for joining Clash! We're excited to have you on board. To get started and access all features, please enter the verification code below in your app.
                         </Text>
                     </Row>
 
                     <Row>
                         <Section style={{ textAlign: 'center', margin: '32px 0' }}>
-                            <Button
-                                href={link}
-                                style={{
-                                    backgroundColor: '#a855f7',
-                                    background: 'linear-gradient(135deg, #f472b6 0%, #a855f7 100%)',
-                                    color: '#ffffff',
-                                    padding: '14px 32px',
-                                    borderRadius: '8px',
-                                    fontSize: '16px',
-                                    fontWeight: '600',
-                                    textDecoration: 'none',
-                                    display: 'inline-block',
-                                    border: 'none',
-                                    boxShadow: '0 4px 14px 0 rgba(168, 85, 247, 0.3)',
-                                    transition: 'all 0.2s ease'
-                                }}
-                            >
-                                Verify My Account
-                            </Button>
+                            <Text style={{
+                                fontSize: '14px',
+                                color: '#6b7280',
+                                margin: '0 0 12px 0',
+                                fontWeight: '600'
+                            }}>
+                                Your Verification Code:
+                            </Text>
+                            <Text style={{
+                                fontSize: '32px',
+                                fontWeight: '800',
+                                color: '#a855f7',
+                                letterSpacing: '8px',
+                                margin: '0',
+                                padding: '20px 32px',
+                                backgroundColor: '#f9fafb',
+                                borderRadius: '12px',
+                                border: '2px solid #e5e7eb',
+                                display: 'inline-block',
+                                fontFamily: 'Monaco, Consolas, monospace'
+                            }}>
+                                {verifyCode}
+                            </Text>
                         </Section>
                     </Row>
 
                     <Row>
                         <Text style={{
                             fontSize: '14px',
-                            color: '#a855f7',
+                            color: '#6b7280',
                             lineHeight: '1.5',
-                            margin: '0 0 32px 0',
-                            textAlign: 'center',
-                            wordBreak: 'break-all',
-                            backgroundColor: '#f9fafb',
-                            padding: '12px',
-                            borderRadius: '6px',
-                            border: '1px solid #e5e7eb'
+                            margin: '0 0 16px 0',
+                            textAlign: 'center'
                         }}>
-                            {link}
+                            Simply copy this code and paste it in the verification field.
                         </Text>
                     </Row>
 
@@ -149,7 +148,7 @@ export default function VerificationEmailTemplate({ name, link }: VerificationEm
                             lineHeight: '1.5',
                             margin: '0'
                         }}>
-                            This verification link will expire in 1 hour for security reasons.
+                            This verification code will expire in 10 minutes for security reasons.
                         </Text>
                     </Row>
                 </Section>
