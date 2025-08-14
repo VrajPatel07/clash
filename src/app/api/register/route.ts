@@ -1,14 +1,25 @@
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-import { sendEmail } from "@/lib/emails/sendEmail";
 import { registerSchema } from "@/schemas/authSchema";
 import { db } from "@/lib/db";
+import { emailQueue, emailQueueName } from "@/jobs/emailQueue";
 
 
 export async function POST(req: Request) {
     try {
-        const { name, email, password, confirm_password }: z.infer<typeof registerSchema> = await req.json();
+        const { username, email, password, confirm_password }: z.infer<typeof registerSchema> = await req.json();
+
+        const existingVerifiedUserByUsername = await db.user.findFirst({
+            where: {
+                username,
+                isVerified: true
+            }
+        });
+
+        if (existingVerifiedUserByUsername) {
+            return Response.json({ success: false, message: "Username is already taken" }, { status: 400 });
+        }
 
         const existingUserByEmail = await db.user.findFirst({
             where: {
@@ -54,7 +65,7 @@ export async function POST(req: Request) {
 
             await db.user.create({
                 data: {
-                    name,
+                    username,
                     email,
                     password: hashedPassword,
                     verifyCode,
@@ -64,18 +75,14 @@ export async function POST(req: Request) {
             });
         }
 
-        // Send verification email
-        const emailResponse = await sendEmail({
+        
+        await emailQueue.add(emailQueueName, {
             email,
-            name,
+            username,
             verifyCode,
             template: "verifyEmail",
             subject: "Verify your account"
         });
-
-        if (!emailResponse.success) {
-            return Response.json({ success: false, message: emailResponse.message }, { status: 500 });
-        }
 
         return Response.json({ success: true, message: "User registered successfully. Please verify your account." }, { status: 200 });
     }

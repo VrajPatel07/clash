@@ -3,11 +3,11 @@ import { db } from "@/lib/db";
 
 export async function POST (req : Request) {
     try {
-        const {email, code} = await req.json();
+        const {username, code} = await req.json();
 
         const user = await db.user.findFirst({
             where : {
-                email : email
+                username
             }
         });
 
@@ -23,7 +23,7 @@ export async function POST (req : Request) {
             
             await db.user.update({
                 where : {
-                    email : email
+                    username
                 },
                 data : {
                     isVerified : true

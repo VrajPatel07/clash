@@ -40,7 +40,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
                 catch (error: any) {
                     throw new Error(error);
-                    return null;
                 }
             }
         })

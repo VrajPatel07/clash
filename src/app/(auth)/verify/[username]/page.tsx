@@ -3,15 +3,23 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { useParams, useRouter } from 'next/navigation';
+import axios from 'axios';
 
 import { verifySchema } from '@/schemas/authSchema';
 
 import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { toast } from 'sonner';
+
 
 
 export default function VerifyUsername() {
+
+    const router = useRouter();
+
+    const params = useParams<{ username : string }>();
 
     const form = useForm<z.infer<typeof verifySchema>>({
         resolver: zodResolver(verifySchema),
@@ -23,10 +31,19 @@ export default function VerifyUsername() {
 
     const submitHandler = async (data: z.infer<typeof verifySchema>) => {
         try {
-            console.log(data);
+            const response = await axios.post(`/api/verify`, {
+                username: params.username,
+                code: data.code
+            });
+
+            toast(response.data.message);
+
+            if (response.data.success) {
+                router.replace('/login');
+            }
         }
         catch (error) {
-            console.log("An error occurred. Please try again.");
+            toast("An error occurred. Please try again.");
         }
     }
 

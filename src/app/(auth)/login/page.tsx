@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 import { loginSchema } from "@/schemas/authSchema";
 import { Button } from "@/components/ui/button";
@@ -17,6 +20,8 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const router = useRouter();
+
 
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -28,13 +33,31 @@ export default function Login() {
     });
 
 
-    const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    const submitHandler = async (data: z.infer<typeof loginSchema>) => {
         try {
             setIsLoading(true);
-            console.log(data);
+
+            const result = await signIn("credentials", {
+                redirect: false,
+                email : data.email,
+                password : data.password
+            });
+
+            if (result?.error) {
+                if (result.error === "CredentialsSignin") {
+                    toast("Incorrect email or password.")
+                }
+                else {
+                    toast(result.error);
+                }
+            }
+
+            if (result?.url) {
+                router.replace("/dashboard");
+            }
         } 
         catch (error) {
-            console.error("Login error:", error);
+            toast("An error occurred. Please try again.");
         } 
         finally {
             setIsLoading(false);
@@ -70,7 +93,7 @@ export default function Login() {
 
                     <div className="px-8 pb-8">
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <form onSubmit={form.handleSubmit(submitHandler)} className="space-y-6">
 
                                 <FormField
                                     control={form.control}
