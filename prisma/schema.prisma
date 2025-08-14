@@ -13,21 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id                   String    @id @default(uuid())
-  name                 String
-  email                String    @unique
-  password             String
-  password_reset_token String?
-  token_send_at        DateTime?
-  email_verify_token   String?
-  email_verified_at    DateTime?
-  createdAt            DateTime  @default(now())
+  id                  String    @id @default(uuid())
+  name                String
+  email               String    @unique
+  password            String
+  resetPassworkToken  String?
+  resetPasswordExpiry DateTime?
+  verifyCode          String
+  verifyCodeExpiry    DateTime
+  isVerified          Boolean   @default(false)
+  createdAt           DateTime  @default(now())
 
   clash Clash[]
 }
-
 
 model Clash {
   id          String   @id @default(uuid())
@@ -44,7 +43,6 @@ model Clash {
   ClashComments ClashComments[]
 }
 
-
 model ClashItem {
   id        String   @id @default(uuid())
   clashId   String
@@ -54,7 +52,6 @@ model ClashItem {
 
   clash Clash @relation(fields: [clashId], references: [id], onDelete: Cascade)
 }
-
 
 model ClashComments {
   id        String   @id @default(uuid())
