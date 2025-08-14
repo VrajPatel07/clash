@@ -1,16 +1,47 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Mail, Lock, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { loginSchema } from "@/schemas/authSchema";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
 
 export default function Login() {
 
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+
+    const form = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+        mode: "onChange"
+    });
+
+
+    const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+        try {
+            setIsLoading(true);
+            console.log(data);
+        } 
+        catch (error) {
+            console.error("Login error:", error);
+        } 
+        finally {
+            setIsLoading(false);
+        }
+    };
+
+    
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 flex justify-center items-center p-4">
 
@@ -38,71 +69,86 @@ export default function Login() {
                     </div>
 
                     <div className="px-8 pb-8">
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-                        <div className="space-y-6">
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm font-semibold text-gray-700">Email</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                                    <Input 
+                                                        {...field}
+                                                        type="email"
+                                                        placeholder="Enter your email" 
+                                                        className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage className="text-xs" />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="text-sm font-semibold text-gray-700"> Email </Label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <Input 
-                                        id="email" 
-                                        name="email" 
-                                        placeholder="Enter your email" 
-                                        type="email"
-                                        className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm font-semibold text-gray-700">Password</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                                    <Input 
+                                                        {...field}
+                                                        type={showPassword ? "text" : "password"}
+                                                        placeholder="Enter your password" 
+                                                        className="pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                                    >
+                                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                    </button>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage className="text-xs" />
+                                            <div className="flex justify-end">
+                                                <a 
+                                                    href="/forgot-password" 
+                                                    className="text-sm font-semibold text-purple-600 hover:text-purple-700 transition-colors hover:underline"
+                                                >
+                                                    Forgot Password?
+                                                </a>
+                                            </div>
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="password" className="text-sm font-semibold text-gray-700"> Password </Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <Input 
-                                        id="password" 
-                                        name="password" 
-                                        placeholder="Enter your password" 
-                                        type={showPassword ? "text" : "password"}
-                                        className="pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                                    >
-                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                    </button>
-                                </div>
-                                <div className="flex justify-end">
-                                    <a 
-                                        href="/forgot-password" 
-                                        className="text-sm font-semibold text-purple-600 hover:text-purple-700 transition-colors hover:underline"
-                                    >
-                                        Forgot Password?
-                                    </a>
-                                </div>
-                            </div>
-
-                            <Button 
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                            >
-                                {
-                                    isLoading ? (
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                            Signing in...
-                                        </div>
-                                    ) : (
-                                        "Sign In"
-                                    )
-                                }
-                            </Button>
-                        </div>
+                                <Button 
+                                    type="submit"
+                                    disabled={isLoading || !form.formState.isValid}
+                                    className="w-full h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                >
+                                    {
+                                        isLoading ? (
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                                Signing in...
+                                            </div>
+                                        ) : (
+                                            "Sign In"
+                                        )
+                                    }
+                                </Button>
+                            </form>
+                        </Form>
 
                         <div className="flex items-center my-6">
                             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>

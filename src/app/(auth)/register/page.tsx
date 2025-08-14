@@ -1,20 +1,54 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, User, Mail, Lock, Sparkles, Check, X } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { registerSchema } from "@/schemas/authSchema";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
 
 export default function Register() {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const passwordsMatch = password && confirmPassword && password === confirmPassword;
+    
+    const form = useForm<z.infer<typeof registerSchema>>({
+        resolver: zodResolver(registerSchema),
+        defaultValues: {
+            name: "",
+            email: "",
+            password: "",
+            confirm_password: "",
+        },
+        mode: "onChange"
+    });
+
+
+    const password = form.watch("password");
+    const confirm_password = form.watch("confirm_password");
+    const passwordsMatch = password && confirm_password && password === confirm_password;
+
+
+    const onSubmit = async (data: z.infer<typeof registerSchema>) => {
+        try {
+            setIsLoading(true);
+            console.log(data);
+        } 
+        catch (error) {
+            console.error("Registration error:", error);
+        } 
+        finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 flex justify-center items-center p-4">
@@ -42,126 +76,151 @@ export default function Register() {
                     </div>
 
                     <div className="px-8 pb-8">
-                        <div className="space-y-3">
-                            
-                            <div className="space-y-2">
-                                <Label htmlFor="name" className="text-sm font-semibold text-gray-700"> Name </Label>
-                                <div className="relative">
-                                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <Input 
-                                        id="name" 
-                                        name="name" 
-                                        placeholder="Enter your name" 
-                                        type="text"
-                                        className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+                                
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm font-semibold text-gray-700">Name</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                                    <Input 
+                                                        {...field}
+                                                        placeholder="Enter your name" 
+                                                        className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage className="text-xs" />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="text-sm font-semibold text-gray-700"> Email </Label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <Input 
-                                        id="email" 
-                                        name="email" 
-                                        placeholder="Enter your email" 
-                                        type="email"
-                                        className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm font-semibold text-gray-700">Email</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                                    <Input 
+                                                        {...field}
+                                                        type="email"
+                                                        placeholder="Enter your email" 
+                                                        className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                    />
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage className="text-xs" />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="password" className="text-sm font-semibold text-gray-700"> Password </Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <Input 
-                                        id="password" 
-                                        name="password" 
-                                        placeholder="Create a strong password" 
-                                        type={showPassword ? "text" : "password"}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                                    >
-                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                    </button>
-                                </div>
-                            </div>
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm font-semibold text-gray-700">Password</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                                    <Input 
+                                                        {...field}
+                                                        type={showPassword ? "text" : "password"}
+                                                        placeholder="Create a strong password" 
+                                                        className="pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                                    >
+                                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                    </button>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage className="text-xs" />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <div className="space-y-2">
-                                <Label htmlFor="confirm-password" className="text-sm font-semibold text-gray-700"> Confirm Password </Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <Input 
-                                        id="confirm-password" 
-                                        name="confirm-password" 
-                                        placeholder="Confirm your password" 
-                                        type={showConfirmPassword ? "text" : "password"}
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className={`pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50 ${
-                                            confirmPassword && !passwordsMatch ? 'border-red-300 focus:border-red-400 focus:ring-red-400' : ''
-                                        }`}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                                    >
-                                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                    </button>
-                                </div>
-                                {
-                                    confirmPassword && (
-                                        <div className={`flex items-center gap-2 text-xs ${
-                                            passwordsMatch ? 'text-green-600' : 'text-red-600'
-                                        }`}>
+                                <FormField
+                                    control={form.control}
+                                    name="confirm_password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm font-semibold text-gray-700">Confirm Password</FormLabel>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                                    <Input 
+                                                        {...field}
+                                                        type={showConfirmPassword ? "text" : "password"}
+                                                        placeholder="Confirm your password" 
+                                                        className={`pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50 ${
+                                                            form.formState.errors.confirm_password ? 'border-red-300 focus:border-red-400 focus:ring-red-400' : ''
+                                                        }`}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                                    >
+                                                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                    </button>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage className="text-xs" />
                                             {
-                                                passwordsMatch ? (
-                                                    <>
-                                                        <Check className="w-4 h-4" />
-                                                        <span>Passwords match</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <X className="w-4 h-4" />
-                                                        <span>Passwords don't match</span>
-                                                    </>
+                                                confirm_password && !form.formState.errors.confirm_password && (
+                                                    <div className={`flex items-center gap-2 text-xs ${
+                                                        passwordsMatch ? 'text-green-600' : 'text-red-600'
+                                                    }`}>
+                                                        {
+                                                            passwordsMatch ? (
+                                                                <>
+                                                                    <Check className="w-4 h-4" />
+                                                                    <span>Passwords match</span>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <X className="w-4 h-4" />
+                                                                    <span>Passwords don't match</span>
+                                                                </>
+                                                            )
+                                                        }
+                                                    </div>
                                                 )
                                             }
-                                        </div>
-                                    )
-                                }
-                            </div>
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <Button 
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                            >
-                                {
-                                    isLoading ? (
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                            Creating account...
-                                        </div>
-                                    ) : (
-                                        "Create Account"
-                                    )
-                                }
-                            </Button>
-                        </div>
+                                <Button 
+                                    type="submit"
+                                    disabled={isLoading || !form.formState.isValid}
+                                    className="w-full h-12 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                >
+                                    {
+                                        isLoading ? (
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                                Creating account...
+                                            </div>
+                                        ) : (
+                                            "Create Account"
+                                        )
+                                    }
+                                </Button>
+                            </form>
+                        </Form>
 
                         <div className="text-center mt-3 pt-6 border-t border-gray-100">
                             <p className="text-gray-600">

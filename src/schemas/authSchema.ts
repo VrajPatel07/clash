@@ -17,6 +17,11 @@ export const loginSchema = z.object({
 });
 
 
+export const verifySchema = z.object({
+    code : z.string({message : "Verify code is required"}).length(6, {message : "Verify code must be of 6 characters"})
+})
+
+
 
 export const forgotPasswordSchema = z.object({
     email : z.email({ message: "Please enter correct email" })
