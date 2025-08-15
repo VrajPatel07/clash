@@ -44,12 +44,7 @@ export default function Login() {
             });
 
             if (result?.error) {
-                if (result.error === "CredentialsSignin") {
-                    toast("Incorrect email or password.")
-                }
-                else {
-                    toast(result.error);
-                }
+                toast("Incorrect email or password.");
             }
 
             if (result?.url) {
@@ -109,6 +104,7 @@ export default function Login() {
                                                         type="email"
                                                         placeholder="Enter your email" 
                                                         className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                        autoComplete="username"
                                                     />
                                                 </div>
                                             </FormControl>
@@ -131,6 +127,7 @@ export default function Login() {
                                                         type={showPassword ? "text" : "password"}
                                                         placeholder="Enter your password" 
                                                         className="pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                        autoComplete="current-password" 
                                                     />
                                                     <button
                                                         type="button"

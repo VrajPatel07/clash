@@ -10,6 +10,10 @@ export async function POST(req: Request) {
     try {
         const { username, email, password, confirm_password }: z.infer<typeof registerSchema> = await req.json();
 
+        if (password !== confirm_password) {
+            return Response.json({ success: false, message: "Passwords do not match" }, { status: 400 });
+        }
+
         const existingVerifiedUserByUsername = await db.user.findFirst({
             where: {
                 username,
@@ -17,9 +21,11 @@ export async function POST(req: Request) {
             }
         });
 
+
         if (existingVerifiedUserByUsername) {
             return Response.json({ success: false, message: "Username is already taken" }, { status: 400 });
         }
+
 
         const existingUserByEmail = await db.user.findFirst({
             where: {
@@ -27,24 +33,25 @@ export async function POST(req: Request) {
             }
         });
 
+
         let verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const expiryDate = new Date();
+        expiryDate.setMinutes(expiryDate.getMinutes() + 10);
+
 
         if (existingUserByEmail) {
             if (existingUserByEmail.isVerified) {
                 return Response.json({ success: false, message: "User already exists" }, { status: 400 });
             }
             else {
-                if (password !== confirm_password) {
-                    return Response.json({ success: false, message: "Passwords do not match" }, { status: 400 });
-                }
-
-                const hashedPassword = await bcrypt.hash(password, 10);
-
                 await db.user.update({
                     where: {
                         email
                     },
                     data: {
+                        username: username,
                         password: hashedPassword,
                         verifyCode: verifyCode,
                         verifyCodeExpiry: new Date(Date.now() + 600000)
@@ -53,16 +60,6 @@ export async function POST(req: Request) {
             }
         }
         else {
-            if (password !== confirm_password) {
-                return Response.json({ success: false, message: "Passwords do not match" }, { status: 400 });
-            }
-
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            const expiryDate = new Date();
-
-            expiryDate.setMinutes(expiryDate.getMinutes() + 10);
-
             await db.user.create({
                 data: {
                     username,
@@ -75,14 +72,18 @@ export async function POST(req: Request) {
             });
         }
 
-        
-        await emailQueue.add(emailQueueName, {
-            email,
-            username,
-            verifyCode,
-            template: "verifyEmail",
-            subject: "Verify your account"
-        });
+        try {
+            await emailQueue.add(emailQueueName, {
+                email,
+                username,
+                verifyCode,
+                template: "verifyEmail",
+                subject: "Verify your account"
+            });
+        }
+        catch (error) {
+            console.error('Failed to queue verification email:', error);
+        }
 
         return Response.json({ success: true, message: "User registered successfully. Please verify your account." }, { status: 200 });
     }

@@ -13,10 +13,13 @@ export const defaultQueueOptions : DefaultJobOptions = {
         count : 20,
         age : 60*60
     },
+    removeOnFail: {
+        count: 100, 
+        age: 7 * 24 * 60 * 60,
+    },
     attempts : 3,
     backoff : {
         type : "exponential",
         delay : 3000
-    },
-    removeOnFail : false
+    }
 }

@@ -2,12 +2,12 @@ import { Html, Head, Font, Preview, Heading, Row, Section, Text, Button, Contain
 
 
 interface ForgotPasswordEmailProps {
-    name: string;
+    username: string;
     resetPasswordLink?: string;
 }
 
 
-export default function ForgotPasswordEmailTemplate({ name, resetPasswordLink }: ForgotPasswordEmailProps) {
+export default function ForgotPasswordEmailTemplate({ username, resetPasswordLink }: ForgotPasswordEmailProps) {
     return (
         <Html lang="en" dir="ltr">
             <Head>
@@ -77,7 +77,7 @@ export default function ForgotPasswordEmailTemplate({ name, resetPasswordLink }:
                             margin: '0 0 16px 0',
                             lineHeight: '1.3'
                         }}>
-                            Hi {name} 🔐
+                            Hi {username} 🔐
                         </Heading>
                     </Row>
 

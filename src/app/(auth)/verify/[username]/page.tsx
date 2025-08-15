@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 
 
 
-export default function VerifyUsername() {
+export default function Verify() {
 
     const router = useRouter();
 

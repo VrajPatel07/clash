@@ -162,6 +162,7 @@ export default function Register() {
                                                         type="email"
                                                         placeholder="Enter your email"
                                                         className="pl-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
+                                                        autoComplete="username"
                                                     />
                                                 </div>
                                             </FormControl>
@@ -182,6 +183,7 @@ export default function Register() {
                                                     <Input
                                                         {...field}
                                                         type={showPassword ? "text" : "password"}
+                                                        autoComplete="new-password" 
                                                         placeholder="Create a strong password"
                                                         className="pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50"
                                                     />
@@ -212,8 +214,8 @@ export default function Register() {
                                                         {...field}
                                                         type={showConfirmPassword ? "text" : "password"}
                                                         placeholder="Confirm your password"
-                                                        className={`pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50 ${form.formState.errors.confirm_password ? 'border-red-300 focus:border-red-400 focus:ring-red-400' : ''
-                                                            }`}
+                                                        className={`pl-11 pr-11 h-12 bg-gray-50/50 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-xl transition-all duration-200 hover:bg-gray-50 ${form.formState.errors.confirm_password ? 'border-red-300 focus:border-red-400 focus:ring-red-400' : ''}`}
+                                                        autoComplete="new-password" 
                                                     />
                                                     <button
                                                         type="button"

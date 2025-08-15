@@ -6,7 +6,7 @@ import ForgotPasswordEmailTemplate from "@/lib/emails/templates/forgotpasswordEm
 
 interface emailProps {
     email : string;
-    name : string;
+    username : string;
     resetPasswordLink? : string;
     verifyCode? : string
     subject : string;
@@ -14,7 +14,7 @@ interface emailProps {
 }
 
 
-export const sendEmail = async ({email, name, resetPasswordLink, template, subject, verifyCode} : emailProps) => {
+export const sendEmail = async ({email, username, resetPasswordLink, template, subject, verifyCode} : emailProps) => {
     try {
 
         const transporter = nodemailer.createTransport({
@@ -30,10 +30,10 @@ export const sendEmail = async ({email, name, resetPasswordLink, template, subje
         let emailHtml;
 
         if (template === "resetPassword") {
-            emailHtml = await pretty(await render(ForgotPasswordEmailTemplate({ name, resetPasswordLink })));
+            emailHtml = await pretty(await render(ForgotPasswordEmailTemplate({ username, resetPasswordLink })));
         }
         else {
-            emailHtml = await pretty(await render(VerificationEmailTemplate({ name, verifyCode })));
+            emailHtml = await pretty(await render(VerificationEmailTemplate({ username, verifyCode })));
         }
 
         await transporter.sendMail({

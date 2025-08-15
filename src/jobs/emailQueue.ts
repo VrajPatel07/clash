@@ -4,10 +4,11 @@ import { sendEmail } from "@/lib/emails/sendEmail";
 
 interface emailJobProps {
     email : string;
-    name : string;
+    username : string;
     link : string;
     subject : string;
-    template : "verifyEmail" | "resetPassword"
+    template : "verifyEmail" | "resetPassword";
+    verifyCode? : string
 }
 
 

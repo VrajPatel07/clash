@@ -2,12 +2,12 @@ import { Html, Head, Font, Preview, Heading, Row, Section, Text, Container, Hr }
 
 
 interface VerificationEmailProps {
-    name: string;
+    username: string;
     verifyCode?: string;
 }
 
 
-export default function VerificationEmailTemplate({ name, verifyCode }: VerificationEmailProps) {
+export default function VerificationEmailTemplate({ username, verifyCode }: VerificationEmailProps) {
     return (
         <Html lang="en" dir="ltr">
             <Head>
@@ -69,7 +69,7 @@ export default function VerificationEmailTemplate({ name, verifyCode }: Verifica
                             margin: '0 0 16px 0',
                             lineHeight: '1.3'
                         }}>
-                            Hey {name}! 👋
+                            Hey {username}! 👋
                         </Heading>
                     </Row>
 
