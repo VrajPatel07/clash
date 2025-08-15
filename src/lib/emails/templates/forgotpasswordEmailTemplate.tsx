@@ -99,7 +99,7 @@ export default function ForgotPasswordEmailTemplate({ username, resetPasswordLin
                             lineHeight: '1.6',
                             margin: '0 0 24px 0'
                         }}>
-                            Click the button below to create a new password. This link is secure and will expire in 1 hour for your protection.
+                            Click the button below to create a new password. This link is secure and will expire in 10 minutes for your protection.
                         </Text>
                     </Row>
 
@@ -184,7 +184,7 @@ export default function ForgotPasswordEmailTemplate({ username, resetPasswordLin
                             lineHeight: '1.5',
                             margin: '0 0 8px 0'
                         }}>
-                            This password reset link will expire in 1 hour for security reasons.
+                            This password reset link will expire in 10 minutes for security reasons.
                         </Text>
                     </Row>
 
