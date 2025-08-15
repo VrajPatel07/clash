@@ -77,13 +77,15 @@ export default function Register() {
 
             toast(response.data.message);
 
-            if (response.data.success) {
+            if (response.status === 200) {
                 router.replace(`/verify/${data.username}`);
             }
         }
-        catch (error) {
-            toast("There was a problem with your sign-up. Please try again.");
-        }
+        catch (error : any) {
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+        } 
         finally {
             setIsLoading(false);
         }

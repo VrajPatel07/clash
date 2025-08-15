@@ -36,15 +36,16 @@ export default function Verify() {
                 code: data.code
             });
 
-            toast(response.data.message);
-
-            if (response.data.success) {
+            if (response.status === 200) {
+                toast(response.data.message);
                 router.replace('/login');
             }
         }
-        catch (error) {
-            toast("An error occurred. Please try again.");
-        }
+        catch (error : any) {
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            }
+        } 
     }
 
     return (
