@@ -1,13 +1,13 @@
 "use client";
 
 import { Eye, EyeOff, Mail, Lock, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 import { loginSchema } from "@/schemas/authSchema";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,8 @@ export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
+
+    const {data : session} = useSession();
 
 
     const form = useForm<z.infer<typeof loginSchema>>({
@@ -58,6 +60,13 @@ export default function Login() {
             setIsLoading(false);
         }
     };
+
+
+    useEffect(() => {
+        if (session?.user) {
+            router.push("/dashboard");
+        }
+    }, [])
 
     
     return (

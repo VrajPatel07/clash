@@ -31,7 +31,7 @@ export async function POST(req: Request) {
             }
         });
 
-        const resetPasswordLink = `${process.env.APP_URL}/reset-password?token=${token}`;
+        const resetPasswordLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
 
         try {
             await emailQueue.add(emailQueueName, {
